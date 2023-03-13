@@ -31,6 +31,10 @@ navigator.geolocation.getCurrentPosition(
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
         }).addTo(map);
 
+        /* 
+            234: Displaying a map marker
+        */
+
         map.on('click', e => {
             const {lat, lng} = e.latlng;
             L.marker([lat, lng]).addTo(map)
@@ -47,8 +51,4 @@ navigator.geolocation.getCurrentPosition(
     },
     (error) => {
         console.log(error);
-    }, {
-    // enableHighAccuracy: true,
-    // maximumAge: 2,
-    // timeout: 1
-});
+    }, {});
