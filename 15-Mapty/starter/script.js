@@ -31,9 +31,19 @@ navigator.geolocation.getCurrentPosition(
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
         }).addTo(map);
 
-        L.marker(coords).addTo(map)
-            .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-            .openPopup();
+        map.on('click', e => {
+            const {lat, lng} = e.latlng;
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup(L.popup({
+                    maxWidth: 200,
+                    minWidth: 100,
+                    autoClose: false,
+                    closeOnClick: false,
+                    className: 'running-popup'
+                }))
+                .setPopupContent('Workout!!')
+                .openPopup();
+        })
     },
     (error) => {
         console.log(error);
