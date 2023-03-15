@@ -72,11 +72,13 @@ class App {
 
     #map;
     #mapEvent;
+    #mapZoomLevel = 15;
     #workouts = [];
 
     constructor () {
         this._addEventListeners();
         this._getPosition();
+        containerWorkouts.addEventListener('click', this._moveToPopup.bind(this))
     }
 
     _addEventListeners () {
@@ -104,7 +106,7 @@ class App {
             233: Displaying a Map using leaflet library
         */
 
-        this.#map = L.map('map').setView([latitude, longitude], 15);
+        this.#map = L.map('map').setView([latitude, longitude], this.#mapZoomLevel);
         L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
@@ -169,6 +171,20 @@ class App {
 
     _clearInputFields () {
         inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value = '';
+    }
+
+    _moveToPopup (e) {
+        const workoutEl = e.target.closest('.workout');
+        if (!workoutEl) {
+            return;
+        }
+        const workout = this.#workouts.find(workout => workout.id === workoutEl.dataset.id)
+        this.#map.setView(workout.coords, this.#mapZoomLevel, {
+            animate: true,
+            pan: {
+                duration: 1
+            }
+        });
     }
 
     /* 
