@@ -78,14 +78,15 @@ class App {
     constructor () {
         this._addEventListeners();
         this._getPosition();
-        containerWorkouts.addEventListener('click', this._moveToPopup.bind(this))
+        this._getLocalStorage();
     }
 
     _addEventListeners () {
         // This keyword will point to the object on which we are attaching the eventlistener
         // So, bind the class
         form.addEventListener('submit', this._newWorkout.bind(this));
-        inputType.addEventListener('change', this._toggleElevationField)
+        inputType.addEventListener('change', this._toggleElevationField);
+        containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
     }
 
     _getPosition () {
@@ -112,6 +113,7 @@ class App {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
         }).addTo(this.#map);
         this.#map.on('click', this._showForm.bind(this));
+        this.#workouts.forEach(workout => this._renderWorkoutMarker(workout));
     }
 
     /* 
@@ -167,6 +169,7 @@ class App {
         this._renderWorkout(workout);
         this._clearInputFields();
         this._hideForm();
+        this._setLocalStorage();
     }
 
     _clearInputFields () {
@@ -258,6 +261,20 @@ class App {
         setTimeout(() => {
             form.style.display = 'grid';
         }, 1000);
+    }
+
+    _setLocalStorage () {
+        localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+    }
+
+    _getLocalStorage () {
+        this.#workouts = JSON.parse(localStorage.getItem('workouts')) ?? [];
+        this.#workouts.length && this.#workouts.forEach(workout => this._renderWorkout(workout));
+    }
+
+    reset () {
+        localStorage.clear();
+        location.reload();
     }
 }
 
