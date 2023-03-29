@@ -104,17 +104,30 @@ console.log(request);
 const renderError = (msg) =>
     countriesContainer.insertAdjacentText('afterend', msg);
 
+const getJSON = (url, errorMessage = 'Something went wrong!') => {
+    return fetch(url)
+        .then((response) => {
+
+            /* 
+                255:Throwing errors manually
+            */
+            if (!response.ok) {
+                throw new Error(`${errorMessage} (${response.status})`);
+            }
+            return response.json();
+        });
+};
+
 const getCountryData = (country) => {
-    fetch(`${baseUrl}/name/${country}?fullText=true`)
-        .then((response) => response.json())
+    getJSON(`${baseUrl}/name/${country}?fullText=true`, 'Country not found')
         .then((data) => {
             renderCountry(data[0]);
+            if (!data[0]?.borders) {
+                throw new Error('No neighbour found');
+            };
             const [neighbour] = data[0]?.borders;
-
-            if (!neighbour) return;
-            return fetch(`${baseUrl}/alpha?codes=${neighbour}`)
+            return getJSON(`${baseUrl}/alpha?codes=${neighbour}`, 'Neighbor not found');
         })
-        .then((response) => response.json())
         .then((data) => renderCountry(data[0], 'neighbour'))
         /* 
             254: Handling rejected promises
@@ -129,7 +142,9 @@ const getCountryData = (country) => {
 }
 
 btn.addEventListener('click', () => {
-    getCountryData('sdhjfj');
+    // getCountryData('sdhjfj');
+    getCountryData('germany');
+    // getCountryData('Australia');
 
 });
 
