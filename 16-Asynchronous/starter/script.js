@@ -40,22 +40,21 @@ const baseUrl = `https://restcountries.com/v3.1`;
     250: Welcome to callback Hell 🤫
 */
 
-// const renderCountry = (data, className = '') => {
-//     const html = `
-//             <article class="country ${className}">
-//                 <img class="country__img" src="${data.flags.svg}" />
-//                 <div class="country__data">
-//                     <h3 class="country__name">${data.name.common}</h3>
-//                     <h4 class="country__region">${data.region}</h4>
-//                     <p class="country__row"><span>👫</span>${(+data.population / 100000).toFixed(1)} million</p>
-//                     <p class="country__row"><span>🗣️</span>${Object.values(data.languages)}</p>
-//                     <p class="country__row"><span>💰</span>${Object.values(data.currencies)[0].name}</p>
-//                 </div>
-//             </article>`;
+const renderCountry = (data, className = '') => {
+    const html = `
+            <article class="country ${className}">
+                <img class="country__img" src="${data.flags.svg}" />
+                <div class="country__data">
+                    <h3 class="country__name">${data.name.common}</h3>
+                    <h4 class="country__region">${data.region}</h4>
+                    <p class="country__row"><span>👫</span>${(+data.population / 100000).toFixed(1)} million</p>
+                    <p class="country__row"><span>🗣️</span>${Object.values(data.languages)}</p>
+                    <p class="country__row"><span>💰</span>${Object.values(data.currencies)[0].name}</p>
+                </div>
+            </article>`;
 
-//     countriesContainer.insertAdjacentHTML('beforeend', html);
-//     countriesContainer.style.opacity = 1;
-// }
+    countriesContainer.insertAdjacentHTML('beforeend', html);
+}
 
 // const getCountryAndNeighbour = (country) => {
 //     const request = new XMLHttpRequest();
@@ -97,3 +96,41 @@ const baseUrl = `https://restcountries.com/v3.1`;
 
 const request = fetch(`${baseUrl}/name/india?fullText=true`);
 console.log(request);
+
+/* 
+    252: Consuming promises
+*/
+
+const renderError = (msg) =>
+    countriesContainer.insertAdjacentText('afterend', msg);
+
+const getCountryData = (country) => {
+    fetch(`${baseUrl}/name/${country}?fullText=true`)
+        .then((response) => response.json())
+        .then((data) => {
+            renderCountry(data[0]);
+            const [neighbour] = data[0]?.borders;
+
+            if (!neighbour) return;
+            return fetch(`${baseUrl}/alpha?codes=${neighbour}`)
+        })
+        .then((response) => response.json())
+        .then((data) => renderCountry(data[0], 'neighbour'))
+        /* 
+            254: Handling rejected promises
+        */
+        .catch(error => {
+            console.error(`${error} 🚫`);
+            renderError(`Something went wrong 🚫🔴 ${error.message}. Try again!!`);
+        })
+        .finally(() => {
+            countriesContainer.style.opacity = 1;
+        })
+}
+
+btn.addEventListener('click', () => {
+    getCountryData('sdhjfj');
+
+});
+
+// getCountryData('germany');
