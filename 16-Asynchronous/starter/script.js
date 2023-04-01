@@ -220,5 +220,24 @@ const whereAmI = (lat, lng) => {
 
 // whereAmI(52.508, 13.381);
 // whereAmI(19.037, 72.873);
-whereAmI(-33.933, 18.474);
+// whereAmI(-33.933, 18.474);
 // whereAmI(-33.933, -1200.474);
+
+/* 
+    258: The event loop in practice
+*/
+
+console.log('Test start');
+
+// callback will be executed after the microtasks are complete
+setTimeout(() => {
+    console.log('0 sec timer');
+}, 0);
+// Microtask queue -- so will be executed first
+Promise.resolve('Resolved promise 1').then(res => console.log(res));
+Promise.resolve('Resolved promise 2').then(res => {
+    // For loop is to simulate time taken by the mircotask
+    for (let index = 0; index < 1000000000; index++) { }
+    console.log(res);
+});
+console.log('test end');
