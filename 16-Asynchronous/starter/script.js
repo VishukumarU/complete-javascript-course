@@ -223,21 +223,58 @@ const whereAmI = (lat, lng) => {
 // whereAmI(-33.933, 18.474);
 // whereAmI(-33.933, -1200.474);
 
-/* 
+/*
     258: The event loop in practice
 */
 
-console.log('Test start');
+// console.log('Test start');
 
-// callback will be executed after the microtasks are complete
-setTimeout(() => {
-    console.log('0 sec timer');
-}, 0);
-// Microtask queue -- so will be executed first
-Promise.resolve('Resolved promise 1').then(res => console.log(res));
-Promise.resolve('Resolved promise 2').then(res => {
-    // For loop is to simulate time taken by the mircotask
-    for (let index = 0; index < 1000000000; index++) { }
-    console.log(res);
+// // callback will be executed after the microtasks are complete
+// setTimeout(() => {
+//     console.log('0 sec timer');
+// }, 0);
+// // Microtask queue -- so will be executed first
+// Promise.resolve('Resolved promise 1').then(res => console.log(res));
+// Promise.resolve('Resolved promise 2').then(res => {
+//     // For loop is to simulate time taken by the mircotask
+//     for (let index = 0; index < 1000000000; index++) { }
+//     console.log(res);
+// });
+// console.log('test end');
+
+/* 
+    259: Building a simple promise
+*/
+
+const lotteryPromise = new Promise((resolve, reject) => {
+
+    console.log('Lottery draw is happening!!');
+    setTimeout(() => {
+        (Math.random() >= 0.5) ? resolve('You win 😎') : reject(new Error(`You lost your money!! 🚫`))
+    }, 2000);
 });
-console.log('test end');
+
+lotteryPromise
+    .then((res) => console.log(res))
+    .catch(err => console.error(err))
+
+// Promisifying setTimeout
+
+const wait = (seconds) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, seconds * 1000)
+    })
+};
+
+wait(1).then(() => {
+    console.log(`1 second passed`);
+    return wait(1);
+}).then(() => {
+    console.log(`2 second passed`);
+    return wait(1);
+}).then(() => {
+    console.log(`3 second passed`);
+    return wait(1);
+}).then(() => {
+    console.log(`4 second passed`);
+});
