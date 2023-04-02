@@ -246,17 +246,17 @@ const whereAmI = (lat, lng) => {
     259: Building a simple promise
 */
 
-const lotteryPromise = new Promise((resolve, reject) => {
+// const lotteryPromise = new Promise((resolve, reject) => {
 
-    console.log('Lottery draw is happening!!');
-    setTimeout(() => {
-        (Math.random() >= 0.5) ? resolve('You win 😎') : reject(new Error(`You lost your money!! 🚫`))
-    }, 2000);
-});
+//     console.log('Lottery draw is happening!!');
+//     setTimeout(() => {
+//         (Math.random() >= 0.5) ? resolve('You win 😎') : reject(new Error(`You lost your money!! 🚫`))
+//     }, 2000);
+// });
 
-lotteryPromise
-    .then((res) => console.log(res))
-    .catch(err => console.error(err))
+// lotteryPromise
+//     .then((res) => console.log(res))
+//     .catch(err => console.error(err))
 
 // Promisifying setTimeout
 
@@ -266,15 +266,62 @@ const wait = (seconds) => {
     })
 };
 
-wait(1).then(() => {
-    console.log(`1 second passed`);
-    return wait(1);
-}).then(() => {
-    console.log(`2 second passed`);
-    return wait(1);
-}).then(() => {
-    console.log(`3 second passed`);
-    return wait(1);
-}).then(() => {
-    console.log(`4 second passed`);
-});
+// wait(1).then(() => {
+//     console.log(`1 second passed`);
+//     return wait(1);
+// }).then(() => {
+//     console.log(`2 second passed`);
+//     return wait(1);
+// }).then(() => {
+//     console.log(`3 second passed`);
+//     return wait(1);
+// }).then(() => {
+//     console.log(`4 second passed`);
+// });
+
+
+/* 
+    260: Promisifying the Geolocation API
+*/
+
+
+// navigator.geolocation.getCurrentPosition(
+//     (position) => {
+//         console.log(position);
+//     },
+//     (err) => {
+//         console.error(err)
+//     }
+// );
+
+const getPosition = () => {
+    return new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
+};
+
+const whereAmINew = () => {
+    getPosition()
+        .then((res) => {
+            console.log(res);
+            const {latitude: lat, longitude: lng} = res.coords;
+
+            return getJSON(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+        })
+        .then((response) => {
+            if (response.error) {
+                throw new Error('Coords are not valid');
+            }
+            console.log(`You are in ${response.city}, ${response.country}`);
+            return response.country;
+        })
+        .then(country => getCountryData(country))
+        .catch(err => {
+            console.error(`${err.message} Try again!!`);
+        })
+}
+
+btn.addEventListener('click', whereAmINew);
+
+// getPosition()
+//     .then(pos => {
+//         console.log(pos);
+//     });
