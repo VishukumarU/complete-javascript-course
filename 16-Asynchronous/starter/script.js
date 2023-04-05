@@ -402,17 +402,28 @@ const loadNextImage = (path) => {
 
 const whereAmIAsync = async () => {
 
-    const position = await getPosition();
-    const {latitude: lat, longitude: lng} = position.coords;
-    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
-    const dataGeo = await resGeo.json();
+    /* 
+        263: Error handling with try... catch
+    */
 
-    console.log(dataGeo);
-
-    const response = await fetch(`${baseUrl}/name/${dataGeo.country}?fullText=true`);
-    const data = await response.json();
-    renderCountry(data[0]);
-
+    try {
+        const position = await getPosition();
+        const {latitude: lat, longitude: lng} = position.coords;
+        const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+        if (!resGeo.ok) {
+            throw new Error('Problem getting location data');
+        }
+        const dataGeo = await resGeo.json();
+        const response = await fetch(`${baseUrl}/name/${dataGeo.country}?fullText=true`);
+        if (!response.ok) {
+            throw new Error('Problem getting location data');
+        }
+        const data = await response.json();
+        renderCountry(data[0]);
+    } catch (err) {
+        console.error(`${err} 🚫`);
+        renderError(err.message);
+    }
 };
 
 console.log('First');
