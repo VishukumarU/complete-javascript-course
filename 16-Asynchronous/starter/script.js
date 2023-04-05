@@ -55,6 +55,7 @@ const renderCountry = (data, className = '') => {
             </article>`;
 
     countriesContainer.insertAdjacentHTML('beforeend', html);
+    countriesContainer.style.opacity = 1;
 }
 
 // const getCountryAndNeighbour = (country) => {
@@ -386,13 +387,40 @@ const loadNextImage = (path) => {
     return createImage(path);
 }
 
-createImage('img/img-1.jpg')
-    .then((img) => success(img))
-    .then(() => loadNextImage('img/img-2.jpg'))
-    .then((img) => success(img))
-    .then(() => loadNextImage('img/img-3.jpg'))
-    .then((img) => success(img))
-    .then(() => loadNextImage('img/img-4.jpg'))
-    .catch(err => console.error(err));
+// createImage('img/img-1.jpg')
+//     .then((img) => success(img))
+//     .then(() => loadNextImage('img/img-2.jpg'))
+//     .then((img) => success(img))
+//     .then(() => loadNextImage('img/img-3.jpg'))
+//     .then((img) => success(img))
+//     .then(() => loadNextImage('img/img-4.jpg'))
+//     .catch(err => console.error(err));
+
+/* 
+    262: Consuming promises with async/await
+*/
+
+const whereAmIAsync = async () => {
+
+    const position = await getPosition();
+    const {latitude: lat, longitude: lng} = position.coords;
+    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+    const dataGeo = await resGeo.json();
+
+    console.log(dataGeo);
+
+    const response = await fetch(`${baseUrl}/name/${dataGeo.country}?fullText=true`);
+    const data = await response.json();
+    renderCountry(data[0]);
+
+};
+
+console.log('First');
+// whereAmIAsync('india');
+console.log('second');
+
+btn.addEventListener('click', whereAmIAsync)
+
+// getCountryData('india')
 
 
