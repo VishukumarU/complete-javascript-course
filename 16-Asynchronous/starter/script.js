@@ -420,18 +420,45 @@ const whereAmIAsync = async () => {
         }
         const data = await response.json();
         renderCountry(data[0]);
+
+        /* 
+            264: Returning values from Async functions
+        */
+
+        return `You are in ${dataGeo.city}, ${dataGeo.country}`;
     } catch (err) {
         console.error(`${err} 🚫`);
         renderError(err.message);
+        // If we are returning a value from the async function and there is any error in the 
+        // try block, we have to throw the error to handle it in the .catch() block. Else, the 
+        // promise will always be resolved with the error.
+        throw err;
     }
 };
 
-console.log('First');
-// whereAmIAsync('india');
-console.log('second');
+console.log('1: Getting location data');
+// const city = whereAmIAsync();
+// console.log(city);
 
-btn.addEventListener('click', whereAmIAsync)
 
-// getCountryData('india')
+// // Async function always returns a promise. So, using the .then(), .catch(), .finally()
+// // But we can do better to avoid the mixing of the async...await and .then() approaches
+// whereAmIAsync()
+//     .then(city => console.log(`2: ${city}`))
+//     .catch(err => console.error(`2: ${err.message}`))
+//     .finally(() => console.log(`2: completed execution`))
+
+// Use an IIFE to call the function
+(async () => {
+    try {
+        const city = await whereAmIAsync();
+        console.log(`2: ${city}`);
+    } catch (err) {
+        console.error(`2: ${err.message}`);
+    }
+    console.log(`2: completed execution`)
+})();
+console.log('3: Completed location fetch');
+
 
 
