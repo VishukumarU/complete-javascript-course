@@ -451,14 +451,35 @@ console.log('1: Getting location data');
 // Use an IIFE to call the function
 (async () => {
     try {
-        const city = await whereAmIAsync();
-        console.log(`2: ${city}`);
+        // const city = await whereAmIAsync();
+        // console.log(`2: ${city}`);
     } catch (err) {
         console.error(`2: ${err.message}`);
     }
     console.log(`2: completed execution`)
 })();
 console.log('3: Completed location fetch');
+
+/* 
+    265: Returning promises in parallel
+*/
+const getThreeCountries = async (c1, c2, c3) => {
+
+    const p1 = getJSON(`${baseUrl}/name/${c1}?fullText=true`);
+    const p2 = getJSON(`${baseUrl}/name/${c2}?fullText=true`);
+    const p3 = getJSON(`${baseUrl}/name/${c3}?fullText=true`);
+
+    // const [data1] = await getJSON(`${baseUrl}/name/${c1}?fullText=true`);
+    // const [data2] = await getJSON(`${baseUrl}/name/${c2}?fullText=true`);
+    // const [data3] = await getJSON(`${baseUrl}/name/${c3}?fullText=true`);
+
+    const data = await Promise.all([p1, p2, p3])
+
+    console.log(data.flat().map(c => c.capital).flat());
+
+};
+
+getThreeCountries('india', 'canada', 'pakistan');
 
 
 
