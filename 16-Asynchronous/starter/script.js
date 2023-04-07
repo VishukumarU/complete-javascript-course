@@ -479,7 +479,57 @@ const getThreeCountries = async (c1, c2, c3) => {
 
 };
 
-getThreeCountries('india', 'canada', 'pakistan');
+// getThreeCountries('india', 'canada', 'pakistan');
 
 
+/* 
+    266: Other promise combinators: race, allSettled and any
+*/
 
+(async () => {
+    const res = await Promise.race(
+        [
+            getJSON(`${baseUrl}/name/italy?fullText=true`),
+            getJSON(`${baseUrl}/name/india?fullText=true`),
+            getJSON(`${baseUrl}/name/canada?fullText=true`)
+        ]
+    );
+
+    console.log(res[0].name.common);
+})();
+
+// timeout function to reject long running requests
+const timeout = (sec) => {
+    return new Promise((_, reject) => {
+        setTimeout(() => {
+            reject('Request took too long 🔴');
+        }, sec * 1000);
+    });
+};
+
+(async () => {
+    try {
+        const res = await Promise.race([
+            getJSON(`${baseUrl}/name/italy?fullText=true`),
+            timeout(0.1)    // use a timeout to check of long running promises and reject them
+        ]);
+        console.log(res);
+    } catch (err) {
+        console.error(err);
+    }
+})();
+
+// allSettled -- ES2020
+
+Promise.allSettled([
+    Promise.resolve('Success'),
+    Promise.reject('error'),
+    Promise.resolve('Success again'),
+]).then(res => console.log(res));
+
+// any -- ES2021 -- Returns first of the fulfilling promises
+Promise.any([
+    // Promise.resolve('Success'),
+    Promise.reject('error'),
+    Promise.reject('Success again'),
+]).then(res => console.log(res));
