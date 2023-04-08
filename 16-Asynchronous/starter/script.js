@@ -363,8 +363,6 @@ const createImage = (imgPath) => {
         image.src = imgPath;
 
         if (image) {
-
-
             image.addEventListener('load', () => {
                 imageContainer.append(image);
                 return resolve(image);
@@ -482,54 +480,110 @@ const getThreeCountries = async (c1, c2, c3) => {
 // getThreeCountries('india', 'canada', 'pakistan');
 
 
-/* 
+/*
     266: Other promise combinators: race, allSettled and any
 */
 
-(async () => {
-    const res = await Promise.race(
-        [
-            getJSON(`${baseUrl}/name/italy?fullText=true`),
-            getJSON(`${baseUrl}/name/india?fullText=true`),
-            getJSON(`${baseUrl}/name/canada?fullText=true`)
-        ]
-    );
+// (async () => {
+//     const res = await Promise.race(
+//         [
+//             getJSON(`${baseUrl}/name/italy?fullText=true`),
+//             getJSON(`${baseUrl}/name/india?fullText=true`),
+//             getJSON(`${baseUrl}/name/canada?fullText=true`)
+//         ]
+//     );
 
-    console.log(res[0].name.common);
-})();
+//     console.log(res[0].name.common);
+// })();
 
-// timeout function to reject long running requests
-const timeout = (sec) => {
-    return new Promise((_, reject) => {
-        setTimeout(() => {
-            reject('Request took too long 🔴');
-        }, sec * 1000);
-    });
+// // timeout function to reject long running requests
+// const timeout = (sec) => {
+//     return new Promise((_, reject) => {
+//         setTimeout(() => {
+//             reject('Request took too long 🔴');
+//         }, sec * 1000);
+//     });
+// };
+
+// (async () => {
+//     try {
+//         const res = await Promise.race([
+//             getJSON(`${baseUrl}/name/italy?fullText=true`),
+//             timeout(0.1)    // use a timeout to check of long running promises and reject them
+//         ]);
+//         console.log(res);
+//     } catch (err) {
+//         console.error(err);
+//     }
+// })();
+
+// // allSettled -- ES2020
+
+// Promise.allSettled([
+//     Promise.resolve('Success'),
+//     Promise.reject('error'),
+//     Promise.resolve('Success again'),
+// ]).then(res => console.log(res));
+
+// // any -- ES2021 -- Returns first of the fulfilling promises
+// Promise.any([
+//     // Promise.resolve('Success'),
+//     Promise.reject('error'),
+//     Promise.reject('Success again'),
+// ]).then(res => console.log(res));
+
+
+/* 
+    267: Coding Challenge #3
+
+    PART 1
+    Write an async function 'loadNPause' that recreates Coding Challenge #2, this time using async/await
+    (only the part where the promise is consumed). Compare the two versions, think about the big differences, 
+    and see which one you like more.
+    Don't forget to test the error handler, and to set the network speed to 'Fast 3G' in the dev tools Network tab.
+
+    PART 2
+    1. Create an async function 'loadAll' that receives an array of image paths 'imgArr';
+    2. Use .map to loop over the array, to load all the images with the 'createImage' function (call the resulting array 'imgs')
+    3. Check out the 'imgs' array in the console! Is it like you expected?
+    4. Use a promise combinator function to actually get the images from the array 😉
+    5. Add the 'paralell' class to all the images (it has some CSS styles).
+
+    TEST DATA: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']. To test, turn off the 'loadNPause' function.
+
+GOOD LUCK 😀
+*/
+
+const loadNPause = async () => {
+    try {
+        let img = await createImage('img/img-1.jpg');
+        await success(img);
+        img = await loadNextImage('img/img-2.jpg');
+        await success(img);
+        img = await loadNextImage('img/img-3.jpg');
+        await success(img);
+        img = await loadNextImage('img/img-4.jpg');
+        await success(img);
+    } catch (err) {
+        console.error(err.message);
+    }
 };
 
-(async () => {
+// loadNPause();
+
+const loadAll = async (...imgPaths) => {
+
     try {
-        const res = await Promise.race([
-            getJSON(`${baseUrl}/name/italy?fullText=true`),
-            timeout(0.1)    // use a timeout to check of long running promises and reject them
-        ]);
-        console.log(res);
+        const imgRequests = imgPaths.map(async (path) => await createImage(path));
+        console.log(imgRequests);
+        const images = await Promise.all(imgRequests)
+        console.log(images);
+
+        images.forEach(img =>
+            img.classList.add('parallel'));
     } catch (err) {
-        console.error(err);
+        console.error(err.message);
     }
-})();
+}
 
-// allSettled -- ES2020
-
-Promise.allSettled([
-    Promise.resolve('Success'),
-    Promise.reject('error'),
-    Promise.resolve('Success again'),
-]).then(res => console.log(res));
-
-// any -- ES2021 -- Returns first of the fulfilling promises
-Promise.any([
-    // Promise.resolve('Success'),
-    Promise.reject('error'),
-    Promise.reject('Success again'),
-]).then(res => console.log(res));
+loadAll('img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg');
