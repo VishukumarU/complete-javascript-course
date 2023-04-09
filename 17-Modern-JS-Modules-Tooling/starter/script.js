@@ -14,11 +14,40 @@ console.log('Importing module');
 // console.log(ShoppingCart.totalPrice, ShoppingCart.tq);
 
 // default import
-import add, {cart} from './clean.js';       // not a good practice to mix the styles of imports. Done here for demo
+import add, { cart } from './clean.js';       // not a good practice to mix the styles of imports. Done here for demo
 
 add('pizza', 2);
 add('chapati', 5);
 add('dose', 6);
 
-// variables in the import point to the same place in memory as in the exported file
-console.log(cart);
+// // variables in the import point to the same place in memory as in the exported file
+// console.log(cart);
+
+/* 
+    273: Top-level await(ES2022)
+*/
+
+// console.log('start fetching');
+
+// const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+// const data = await res.json();
+// console.log(data);
+
+// console.log('fetch complete');
+
+const getLastPost = async () => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await res.json();
+    console.log(data);
+    return { title: data.at(-1).title, text: data.at(-1).body }
+};
+
+const lastPost = getLastPost();
+console.log(lastPost);  // async function will return a promise
+
+// Not clean
+lastPost.then((post) => console.log(post));
+
+// cleaner with top level await
+const lastPost2 = await getLastPost();
+console.log(lastPost2);
