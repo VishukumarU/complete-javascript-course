@@ -9,13 +9,12 @@
 // console.log(price, tq);
 console.log('Importing module');
 
-// import * as ShoppingCart from './clean.js';
-// ShoppingCart.addToCart('bread', 5);
+import * as ShoppingCart from './shopping-cart.js';
+ShoppingCart.addToCart('bread', 5);
 // console.log(ShoppingCart.totalPrice, ShoppingCart.tq);
 
 // default import
-import add, { cart } from './clean.js';       // not a good practice to mix the styles of imports. Done here for demo
-
+// import add, { cart } from './clean.js';       // not a good practice to mix the styles of imports. Done here for demo
 // add('pizza', 2);
 // add('chapati', 5);
 // add('dose', 6);
@@ -52,32 +51,67 @@ import add, { cart } from './clean.js';       // not a good practice to mix the 
 // const lastPost2 = await getLastPost();
 // console.log(lastPost2);
 
-/* 
+/*
     274: The module pattern
 */
 
-const ShippingCartModule = (() => {
-    const shippingCost = 10;
-    const cart = [];
-    const totalPrice = 237;
-    const totalQuantity = 23;
+// const ShippingCartModule = (() => {
+//     const shippingCost = 10;
+//     const cart = [];
+//     const totalPrice = 237;
+//     const totalQuantity = 23;
 
-    const addToCart = (product, quantity) => {
-        cart.push({ product, quantity });
-        console.log(`${ quantity } ${ product } added to the cart(shipping cost is ${ shippingCost })`);
-    };
+//     const addToCart = (product, quantity) => {
+//         cart.push({ product, quantity });
+//         console.log(`${ quantity } ${ product } added to the cart(shipping cost is ${ shippingCost })`);
+//     };
 
-    const order = (product, quantity) => {
-        console.log(`${ quantity } ${ product } ordered`);
-    };
+//     const order = (product, quantity) => {
+//         console.log(`${ quantity } ${ product } ordered`);
+//     };
 
-    return {
-        totalPrice,
-        totalQuantity,
-        addToCart,
-        cart
-    };
-})();
+//     return {
+//         totalPrice,
+//         totalQuantity,
+//         addToCart,
+//         cart
+//     };
+// })();
 
-ShippingCartModule.addToCart('dose', 5);
-ShippingCartModule.addToCart('pizza', 2);
+// ShippingCartModule.addToCart('dose', 5);
+// ShippingCartModule.addToCart('pizza', 2);
+
+/*
+    277: Introduction to NPM
+    */
+
+// Installed couple of modules using npm.
+
+// import cloneDeep from './node_modules/lodash-es/cloneDeep.js';
+import cloneDeep from 'lodash-es/cloneDeep';
+import 'core-js/stable';
+
+const state = {
+    cart: [
+        { product: 'pizza', quantity: 5 },
+        { product: 'bread', quantity: 10 }
+    ],
+    user: {
+        loggedIn: true
+    }
+};
+
+const stateClone = Object.assign({}, state);
+const stateDeepClone = cloneDeep(state);
+state.user.loggedIn = false;
+console.log(stateClone);    // The nested objects will point to objects in parent object.
+
+state.user.loggedIn = true;
+// console.log(stateDeepClone);
+
+// save state using parcel
+if (module.hot) {
+    module.hot.accept();
+}
+
+console.log(stateDeepClone.cart.find(c => c.quantity > 5));
