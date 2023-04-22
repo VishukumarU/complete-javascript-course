@@ -1,14 +1,12 @@
+import { async } from 'regenerator-runtime';
 import * as model from './model.js';
 import recipeView from './views/recipeView.js';
+import searchView from './views/searchView.js';
 
 import 'core-js/stable';    // polyfill everything else
 import 'regenerator-runtime/runtime';   // Polyfill async-await
 
-const recipeContainer = document.querySelector('.recipe');
-
 // https://forkify-api.herokuapp.com/v2
-
-///////////////////////////////////////
 
 const controlRecipe = async () => {
     try {
@@ -19,12 +17,25 @@ const controlRecipe = async () => {
         recipeView.renderSpinner();
         await model.loadRecipe(id);
         const { recipe } = model.state;
-        console.log(recipe);
         recipeView.render(recipe);
     } catch (err) {
         recipeView.renderError();
     }
 };
+
+const controlSearchResults = async () => {
+    try {
+        const query = searchView.getQuery();
+        if (!query) {
+            return;
+        }
+        await model.loadSearchResults(query);
+        console.log(model.state);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 /*
     The click, load etc events are Presentation logic. So, we shouldn't add any eventhandlers directly
     in this file. But, the view of MVC doesn't know that there is a controller as we are not supposed to
@@ -38,6 +49,7 @@ const controlRecipe = async () => {
 const init = () => {
     // Subsciber to the events
     recipeView.addRenderHandler(controlRecipe);
+    searchView.addSearchHandler(controlSearchResults);
 }
 
 init();
