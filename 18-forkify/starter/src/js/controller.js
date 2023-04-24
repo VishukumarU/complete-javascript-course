@@ -9,7 +9,7 @@ import 'regenerator-runtime/runtime';   // Polyfill async-await
 // https://forkify-api.herokuapp.com/v2
 
 if (module.hot) {
-    module.hot.accept();
+    // module.hot.accept();
 }
 
 const controlRecipe = async () => {
@@ -35,8 +35,7 @@ const controlSearchResults = async () => {
             return;
         }
         await model.loadSearchResults(query);
-        console.log(model.state);
-        resultsView.render(model.state.search.results);
+        resultsView.render(model.getSearchResultsPage());
     } catch (err) {
         console.log(err);
     }
