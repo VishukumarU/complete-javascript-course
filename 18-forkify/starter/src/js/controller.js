@@ -5,6 +5,7 @@ import resultsView from './views/resultsView.js';
 
 import 'core-js/stable';    // polyfill everything else
 import 'regenerator-runtime/runtime';   // Polyfill async-await
+import paginationView from './views/paginationView.js';
 
 // https://forkify-api.herokuapp.com/v2
 
@@ -36,9 +37,15 @@ const controlSearchResults = async () => {
         }
         await model.loadSearchResults(query);
         resultsView.render(model.getSearchResultsPage());
+        paginationView.render(model.state.search);
     } catch (err) {
         console.log(err);
     }
+};
+
+const controlPagination = (goToPage) => {
+    resultsView.render(model.getSearchResultsPage(goToPage));
+    paginationView.render(model.state.search);
 };
 
 /*
@@ -55,6 +62,7 @@ const init = () => {
     // Subsciber to the events
     recipeView.addRenderHandler(controlRecipe);
     searchView.addSearchHandler(controlSearchResults);
+    paginationView.addBtnClickHandler(controlPagination);
 }
 
 init();
