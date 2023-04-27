@@ -22,6 +22,7 @@ const controlRecipe = async () => {
         recipeView.renderSpinner();
         await model.loadRecipe(id);
         const { recipe } = model.state;
+        console.log(recipe);
         recipeView.render(recipe);
     } catch (err) {
         recipeView.renderError();
@@ -48,6 +49,11 @@ const controlPagination = (goToPage) => {
     paginationView.render(model.state.search);
 };
 
+const controlNewServings = (newServings) => {
+    model.updateServings(newServings);
+    recipeView.render(model.state.recipe);
+}
+
 /*
     The click, load etc events are Presentation logic. So, we shouldn't add any eventhandlers directly
     in this file. But, the view of MVC doesn't know that there is a controller as we are not supposed to
@@ -61,8 +67,10 @@ const controlPagination = (goToPage) => {
 const init = () => {
     // Subsciber to the events
     recipeView.addRenderHandler(controlRecipe);
+    recipeView.addUpdateServingsHandler(controlNewServings);
     searchView.addSearchHandler(controlSearchResults);
     paginationView.addBtnClickHandler(controlPagination);
+
 }
 
 init();
