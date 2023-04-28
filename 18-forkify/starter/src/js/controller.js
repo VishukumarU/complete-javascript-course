@@ -52,9 +52,14 @@ const controlPagination = (goToPage) => {
 
 const controlNewServings = (newServings) => {
     model.updateServings(newServings);
-    // recipeView.render(model.state.recipe);
     recipeView.update(model.state.recipe);
-}
+};
+
+const controlToggleBookMark = () => {
+    model.toggleBookMark(model.state.recipe);
+    console.log(model.state.recipe);
+    recipeView.update(model.state.recipe);
+};
 
 /*
     The click, load etc events are Presentation logic. So, we shouldn't add any eventhandlers directly
@@ -70,9 +75,9 @@ const init = () => {
     // Subsciber to the events
     recipeView.addRenderHandler(controlRecipe);
     recipeView.addUpdateServingsHandler(controlNewServings);
+    recipeView.addToggleBookMarkHandler(controlToggleBookMark);
     searchView.addSearchHandler(controlSearchResults);
     paginationView.addBtnClickHandler(controlPagination);
-
 }
 
 init();

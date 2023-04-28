@@ -3,13 +3,16 @@ import { getJSON } from './helpers';
 
 
 export const state = {
-    recipe: {},
+    recipe: {
+        bookmarked: false
+    },
     search: {
         query: '',
         results: [],
         page: 1,
         resultsPerPage: RESULTS_PER_PAGE
-    }
+    },
+    bookmarks: []
 };
 
 export const loadRecipe = async (id) => {
@@ -26,6 +29,9 @@ export const loadRecipe = async (id) => {
             ingredients: recipe.ingredients,
             cookingTime: recipe.cooking_time
         };
+
+        state.recipe.bookmarked = state.bookmarks.some(bookMark => bookMark.id === id) ? true : false;
+
     } catch (err) {
         throw err;
     }
@@ -42,6 +48,7 @@ export const loadSearchResults = async (query) => {
             publisher: recipe.publisher,
             image: recipe.image_url,
         }));
+        state.search.page = 1;
     } catch (err) {
         throw err;
     }
@@ -59,4 +66,15 @@ export const updateServings = newServings => {
         ingredient.quantity = ingredient.quantity * newServings / state.recipe.servings;
     });
     state.recipe.servings = newServings;
+};
+
+export const toggleBookMark = (recipe) => {
+
+    state.bookmarks.some(bookMark => bookMark?.id === recipe.id) ?
+        state.bookmarks.splice(state.bookmarks.findIndex(bookMark => bookMark?.id === recipe.id), 1) :
+        state.bookmarks.push(recipe);
+
+    if (recipe.id === state.recipe.id) {
+        state.recipe.bookmarked = !state.recipe?.bookmarked;
+    }
 };

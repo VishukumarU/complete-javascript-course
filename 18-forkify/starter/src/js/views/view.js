@@ -23,11 +23,6 @@ export default class View {
 
         newElements.forEach((newEl, i) => {
             const curEl = currentElements[i];
-
-            console.log(curEl, newEl.isEqualNode(curEl));
-            // console.log(`🚫`, newEl.firstChild?.nodeValue.trim());
-
-
             if (!newEl.isEqualNode(curEl)) {
                 // Update the changed attributes
                 Array.from(newEl.attributes).forEach((attr) => {
