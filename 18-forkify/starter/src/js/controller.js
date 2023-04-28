@@ -2,10 +2,11 @@ import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
+import paginationView from './views/paginationView.js';
+import bookmarksView from './views/bookmarksView.js';
 
 import 'core-js/stable';    // polyfill everything else
 import 'regenerator-runtime/runtime';   // Polyfill async-await
-import paginationView from './views/paginationView.js';
 
 // https://forkify-api.herokuapp.com/v2
 
@@ -22,8 +23,8 @@ const controlRecipe = async () => {
         recipeView.renderSpinner();
         await model.loadRecipe(id);
         const { recipe } = model.state;
-        console.log(recipe);
         resultsView.update(model.getSearchResultsPage());
+        bookmarksView.update(model.state.bookmarks);
         recipeView.render(recipe);
     } catch (err) {
         recipeView.renderError();
@@ -59,6 +60,7 @@ const controlToggleBookMark = () => {
     model.toggleBookMark(model.state.recipe);
     console.log(model.state.recipe);
     recipeView.update(model.state.recipe);
+    bookmarksView.render(model.state.bookmarks);
 };
 
 /*
