@@ -63,6 +63,10 @@ const controlToggleBookMark = () => {
     bookmarksView.render(model.state.bookmarks);
 };
 
+const controlBookmarks = () => {
+    bookmarksView.render(model.state.bookmarks)
+};
+
 /*
     The click, load etc events are Presentation logic. So, we shouldn't add any eventhandlers directly
     in this file. But, the view of MVC doesn't know that there is a controller as we are not supposed to
@@ -75,6 +79,7 @@ const controlToggleBookMark = () => {
 
 const init = () => {
     // Subsciber to the events
+    bookmarksView.addRenderHandler(controlBookmarks);
     recipeView.addRenderHandler(controlRecipe);
     recipeView.addUpdateServingsHandler(controlNewServings);
     recipeView.addToggleBookMarkHandler(controlToggleBookMark);
