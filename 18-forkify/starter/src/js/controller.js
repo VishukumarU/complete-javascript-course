@@ -4,6 +4,7 @@ import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
 import bookmarksView from './views/bookmarksView.js';
+import addRecipeView from './views/addRecipeView.js';
 
 import 'core-js/stable';    // polyfill everything else
 import 'regenerator-runtime/runtime';   // Polyfill async-await
@@ -67,6 +68,10 @@ const controlBookmarks = () => {
     bookmarksView.render(model.state.bookmarks)
 };
 
+const controlAddRecipe = (data) => {
+    console.log(data);
+};
+
 /*
     The click, load etc events are Presentation logic. So, we shouldn't add any eventhandlers directly
     in this file. But, the view of MVC doesn't know that there is a controller as we are not supposed to
@@ -85,6 +90,7 @@ const init = () => {
     recipeView.addToggleBookMarkHandler(controlToggleBookMark);
     searchView.addSearchHandler(controlSearchResults);
     paginationView.addBtnClickHandler(controlPagination);
+    addRecipeView.addUploadHandler(controlAddRecipe);
 }
 
 init();
