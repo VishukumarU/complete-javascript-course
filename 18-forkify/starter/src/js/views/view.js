@@ -4,6 +4,14 @@ export default class View {
 
     _data;
 
+    /**
+     * Render the received Object to DOM
+     * @param {Object| Object[]} data The data to be rendered(e.g. Recipe) 
+     * @param {boolean}[isRender=true] isRender If false, create markup string instead of rendering to DOM
+     * @returns {void | string}
+     * @author Vishu Kumar
+     * @todo finish implementation
+     */
     render (data, isRender = true) {
         if (!data || (Array.isArray(data) && !data.length)) {
             return this.renderError();

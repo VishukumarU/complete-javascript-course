@@ -8,7 +8,27 @@ const timeout = function (s) {
     });
 };
 
-export const getJSON = async (url) => {
+export const AJAX = async (url, uploadData) => {
+    try {
+        const request = !uploadData ? fetch(`${url}`) : fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(uploadData)
+        });
+        const res = await Promise.race([request, timeout(TIME_OUT_SECONDS)]);
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(`${data.message} (${res.status} -- ${res.statusText})`);
+        }
+        return data;
+    } catch (err) {
+        throw err;
+    }
+};
+
+/* export const getJSON = async (url) => {
     try {
         const res = await Promise.race([fetch(`${url}`), timeout(TIME_OUT_SECONDS)]);
         const data = await res.json();
@@ -40,4 +60,4 @@ export const sendJSON = async (url, uploadData) => {
     } catch (err) {
         throw err;
     }
-};
+}; */
